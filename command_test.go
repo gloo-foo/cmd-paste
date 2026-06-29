@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	command "github.com/gloo-foo/cmd-paste"
 	"github.com/gloo-foo/testable"
 	"github.com/gloo-foo/testable/assertion"
+
+	command "github.com/gloo-foo/cmd-paste"
 )
 
 // Default (parallel) mode on a single stream passes each line through as its
@@ -31,7 +32,10 @@ func TestPaste_SerialDefaultTab(t *testing.T) {
 }
 
 func TestPaste_SerialCustomDelimiter(t *testing.T) {
-	lines, err := testable.TestLines(command.Paste(command.PasteSerial, command.PasteDelimiter(",")), "one\ntwo\nthree\n")
+	lines, err := testable.TestLines(
+		command.Paste(command.PasteSerial, command.PasteDelimiter(",")),
+		"one\ntwo\nthree\n",
+	)
 	assertion.NoError(t, err)
 	assertion.Lines(t, lines, []string{"one,two,three"})
 }
@@ -39,7 +43,10 @@ func TestPaste_SerialCustomDelimiter(t *testing.T) {
 // A multi-character -d list is cycled byte by byte between joins: ",;" yields
 // "a,b;c,d;e" for five lines.
 func TestPaste_SerialCyclesDelimiterList(t *testing.T) {
-	lines, err := testable.TestLines(command.Paste(command.PasteSerial, command.PasteDelimiter(",;")), "a\nb\nc\nd\ne\n")
+	lines, err := testable.TestLines(
+		command.Paste(command.PasteSerial, command.PasteDelimiter(",;")),
+		"a\nb\nc\nd\ne\n",
+	)
 	assertion.NoError(t, err)
 	assertion.Lines(t, lines, []string{"a,b;c,d;e"})
 }
@@ -81,7 +88,12 @@ func TestPaste_SerialTableDriven(t *testing.T) {
 	}{
 		{"tab two lines", []any{command.PasteSerial}, "a\nb\n", []string{"a\tb"}},
 		{"comma three lines", []any{command.PasteSerial, command.PasteDelimiter(",")}, "x\ny\nz\n", []string{"x,y,z"}},
-		{"space delimiter", []any{command.PasteSerial, command.PasteDelimiter(" ")}, "hello\nworld\n", []string{"hello world"}},
+		{
+			"space delimiter",
+			[]any{command.PasteSerial, command.PasteDelimiter(" ")},
+			"hello\nworld\n",
+			[]string{"hello world"},
+		},
 		{"single line no join", []any{command.PasteSerial}, "solo\n", []string{"solo"}},
 		{"empty delimiter", []any{command.PasteSerial, command.PasteDelimiter("")}, "a\nb\nc\n", []string{"abc"}},
 		{"parallel passthrough", nil, "a\nb\nc\n", []string{"a", "b", "c"}},

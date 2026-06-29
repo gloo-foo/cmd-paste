@@ -3,8 +3,9 @@ package paste_test
 import (
 	"fmt"
 
-	command "github.com/gloo-foo/cmd-paste"
 	"github.com/gloo-foo/testable"
+
+	command "github.com/gloo-foo/cmd-paste"
 )
 
 func ExamplePaste_basic() {
